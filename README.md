@@ -1,6 +1,6 @@
 # beef-broth
 
-The AI service behind [Pholio](https://github.com/quandev/pholio) — a photo-blog where every post is a story.
+The AI service behind [Pholio](https://github.com/quandev2/pholio) — a photo-blog where every post is a story.
 
 Pholio is named for *pho*. beef-broth is the part that makes the pho good.
 
