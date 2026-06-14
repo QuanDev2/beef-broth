@@ -12,7 +12,7 @@
 | Day | Concept | Status | Notes |
 |-----|---------|--------|-------|
 | 1 | Python env + first API call | done | |
-| 2 | Messages, roles, statelessness | | |
+| 2 | Messages, roles, statelessness | done | |
 | 3 | Tokens, context window, cost | | |
 | 4 | Temperature + params | | |
 | 5 | System prompts | | |
@@ -121,6 +121,20 @@
 ## Session Log
 
 <!-- YYYY-MM-DD | Week X Day Y | Topic | Duration | Key insight or deviation -->
+
+### Week 1, Day 2 — Messages, roles, statelessness
+Date: 2026-06-14
+Status: done
+
+Completed:
+- `call_llm` refactored to accept `messages: list[dict]` instead of a bare string
+- Two-turn Saigon exchange built manually (user → assistant → user)
+- Demonstrated forgetting by stripping history from the second call
+
+Notes:
+- Standing rule added to skill + memory: never auto-edit sandbox/app files during teaching
+
+---
 
 ### Week 1, Day 1 — Python env + first API call
 Date: 2026-06-14

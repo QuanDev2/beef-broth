@@ -192,3 +192,4 @@ After appending, update the **Current position** marker in `docs/progress.md` to
 - Do not edit past entries in `progress.md`.
 - Do not proceed past Phase 4 without a stop-and-check confirmation.
 - Do not manufacture encouragement or filler. Concise and honest.
+- **Do NOT edit `sandbox/` or `app/` files automatically.** During Phase 5, give instructions and explain what to write — wait for Quan to make the change himself. Only touch files if he explicitly says "go ahead" or "do it for me." This is a learning vehicle; auto-editing defeats the purpose.
