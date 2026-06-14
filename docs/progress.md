@@ -11,7 +11,7 @@
 
 | Day | Concept | Status | Notes |
 |-----|---------|--------|-------|
-| 1 | Python env + first API call | | |
+| 1 | Python env + first API call | done | |
 | 2 | Messages, roles, statelessness | | |
 | 3 | Tokens, context window, cost | | |
 | 4 | Temperature + params | | |
@@ -121,3 +121,17 @@
 ## Session Log
 
 <!-- YYYY-MM-DD | Week X Day Y | Topic | Duration | Key insight or deviation -->
+
+### Week 1, Day 1 — Python env + first API call
+Date: 2026-06-14
+Status: done
+
+Completed:
+- Virtualenv set up in `sandbox/.venv`, deps installed from `requirements.txt`
+- `sandbox/llm.py` written: one function, hard-coded Saigon prompt, raw response printed
+- Real API call confirmed working; `.env` verified git-ignored
+- Repo published to GitHub: https://github.com/QuanDev2/beef-broth
+
+Notes:
+- Model set to `claude-haiku-4-5-20251001` for cheap iteration; will make it a parameter on Day 7
+- README updated for GitHub audience before pushing
