@@ -13,8 +13,8 @@
 |-----|---------|--------|-------|
 | 1 | Python env + first API call | done | |
 | 2 | Messages, roles, statelessness | done | |
-| 3 | Tokens, context window, cost | | |
-| 4 | Temperature + params | | |
+| 3 | Tokens, context window, cost | done | |
+| 4 | Temperature + params | done | |
 | 5 | System prompts | | |
 | 6 | Structured JSON output (build) | | |
 | 7 | `llm.py` helper (build) | | |
@@ -121,6 +121,34 @@
 ## Session Log
 
 <!-- YYYY-MM-DD | Week X Day Y | Topic | Duration | Key insight or deviation -->
+
+### Week 1, Day 4 — Temperature and params
+Date: 2026-06-14
+Status: done
+
+Completed:
+- Added `temperature` and `max_tokens` as parameters to `call_llm()` with defaults (0 and 256)
+- Ran same prompt 3× at temp 0 (identical token counts, near-identical output) and 3× at temp 1 (varied length and phrasing)
+- Confirmed Anthropic caps temperature at 1.0 (not 2 like some other providers)
+
+Notes:
+- Captioning and matching steps will run at temp 0 for repeatability; story step may go slightly higher (0.3–0.5) if style variation is wanted
+
+---
+
+### Week 1, Day 3 — Tokens, context window, cost
+Date: 2026-06-14
+Status: done
+
+Completed:
+- Added token + cost reporting to `sandbox/llm.py`: prints input/output tokens and USD cost per call
+- Observed Turn 2 input tokens jump from 17 → 74 (statelessness — full transcript resent)
+- Cost formula: input * (0.80/1M) + output * (4.00/1M), formatted with `:.6f`
+
+Notes:
+- Output tokens cost 5× more than input on Haiku; shapes downstream design (keep output short/structured)
+
+---
 
 ### Week 1, Day 2 — Messages, roles, statelessness
 Date: 2026-06-14

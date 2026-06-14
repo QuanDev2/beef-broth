@@ -6,11 +6,12 @@ load_dotenv()
 client = anthropic.Anthropic()
 
 
-def call_llm(messages: list[dict]) -> str:
+def call_llm(messages: list[dict], temperature: float = 0, max_tokens: int = 256) -> str:
     response = client.messages.create(
         model="claude-haiku-4-5-20251001",
-        max_tokens=256,
+        max_tokens=max_tokens,
         messages=messages,
+        temperature=temperature
     )
     print("input tokens", response.usage.input_tokens)
     print("output tokens", response.usage.output_tokens)
@@ -23,19 +24,23 @@ def call_llm(messages: list[dict]) -> str:
 
 
 if __name__ == "__main__":
-    messages = [{
+    prompt = [{
         "role": "user",
         "content": "Describe Saigon in one sentence."
     }]
-    rep1 = call_llm(messages)
-    print("\n--- Turn 1 ---")
-    print(rep1)
+    print("\n--- Temp 0 ---")
+    for _ in range(3):
+        rep1 = call_llm(prompt)
+        print(rep1) 
 
-    messages.append({"role": "assistant", "content": rep1})
-    messages.append({"role": "user", "content": "make it more poetic"})
-    rep2 = call_llm(messages)
-    print("\n--- Turn 2 (with history) ---")
-    print(rep2)
+    print("\n--- Temp 1 ---")
+    for _ in range(3):
+        rep1 = call_llm(prompt, temperature=1)
+        print(rep1) 
+
+    
+
+
 
 
 
