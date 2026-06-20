@@ -148,6 +148,14 @@ notes). Handle the failure case (retry or raise) when the JSON is invalid.
 **Done:** You can call `llm.py` and get back a validated Python object (not a string), and
 show what happens when the model returns bad JSON and how your code catches it.
 
+> **Standing decision (2026-06-20):** use the **modern structured-outputs path from now on** —
+> `client.messages.parse(output_format=schema)` (or `output_config.format`), which constrains
+> the model at decode time and returns a validated object directly. Strict tool use is the other
+> acceptable option. The ask-for-JSON + assistant-prefill (`"{"`) + manual-validate approach is
+> **legacy/fallback only** (it 400s on Opus 4.6+/Fable 5; works on Haiku 4.5). It was learned once
+> for understanding; don't reach for it by default. This applies to every later structured call —
+> `caption.py` (job 1) and `story.py` (job 3) should both use `messages.parse`.
+
 ### Day 7 — Consolidate: `llm.py` helper, review (build day)
 
 **Learn:** No new concept — consolidation. The week's payoff is one clean helper that wraps
