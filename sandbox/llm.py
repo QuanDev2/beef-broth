@@ -1,6 +1,7 @@
 import anthropic
 from dotenv import load_dotenv
 from typing import Optional
+from pydantic import BaseModel, ValidationError
 
 load_dotenv()
 
@@ -22,20 +23,48 @@ def call_llm(messages: list[dict], temperature: float = 0, max_tokens: int = 256
 
     return response.content[0].text
 
+def call_llm_structured(messages: list[dict], schema: type[BaseModel], temperature: float = 0, max_tokens: int = 256, system: Optional[str] = None):
+    primed = messages + [{"role": "assistant", "content": "{"}]
+    raw = call_llm(primed, temperature=temperature, max_tokens=max_tokens, system=system)
+
+    raw = "{" + raw
+    try:
+        return schema.model_validate_json(raw)
+    except ValidationError as e:
+        print(f"Validation failed. Raw model output was:\n{raw}")
+        raise
+
+class NoteSummary(BaseModel):
+    summary: str
+    tags: list[str]
 
 if __name__ == "__main__":
     prompt = [{
         "role": "user",
         "content": "Describe Saigon in one sentence."
     }]
-    print("\n--- No system ---")
-    rep1 = call_llm(prompt)
-    print(rep1) 
 
-    print("\n--- With system ---")
-    rep1 = call_llm(prompt, system="You're a travel ghostwriter. Use only facts. Do not invent anything")
-    print(rep1) 
+    notes = [{
+        "role": "user",
+        "content": (
+            "Summarize these trip notes. Return JSON.\n"
+            "- Arrive 5am Sunday, long immigration line.\n"
+            "- Hot and humid. Streets crazy busy.\n"
+            "- Food sooo good, pho amazing.\n"
+            "- War Remnants Museum, heartbreaking.\n"
+            "- Cafes and shopping in the evening."
+        )
+    }]
 
+    system = (
+        "You are a JSON API. Return ONLY a valid JSON object, no markdown, "
+        "no code fences, no prose. Schema: "
+        '{"summary": "<one sentence string>", "tags": ["<string>", ...]}'
+    )
+    
+    result = call_llm_structured(notes, schema=NoteSummary, system=system)
+    print(result)
+    result = NoteSummary.model_validate_json('{"summary": "oops", "tags": "not-a-list"}')
 
 
 

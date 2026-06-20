@@ -15,7 +15,7 @@
 | 2 | Messages, roles, statelessness | done | |
 | 3 | Tokens, context window, cost | done | |
 | 4 | Temperature + params | done | |
-| 5 | System prompts | | |
+| 5 | System prompts | done | |
 | 6 | Structured JSON output (build) | | |
 | 7 | `llm.py` helper (build) | | |
 
@@ -121,6 +121,22 @@
 ## Session Log
 
 <!-- YYYY-MM-DD | Week X Day Y | Topic | Duration | Key insight or deviation -->
+
+### Week 1, Day 5 — System prompts
+Date: 2026-06-14
+Status: done
+
+Completed:
+- Added `system: Optional[str] = None` parameter to `call_llm()`
+- Used `**kwargs` pattern to conditionally pass `system` only when not None (API rejects `system=None`)
+- Demonstrated behavior change: same Saigon prompt produced different style with vs without system prompt
+- System prompt added 16 tokens to input cost (17 → 33)
+
+Notes:
+- Python 3.9 requires `Optional[str]` from `typing` — `str | None` is 3.10+ only
+- Anthropic SDK raises 400 if `system=None` is passed explicitly — must omit the key
+
+---
 
 ### Week 1, Day 4 — Temperature and params
 Date: 2026-06-14
