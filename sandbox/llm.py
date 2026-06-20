@@ -24,15 +24,12 @@ def call_llm(messages: list[dict], temperature: float = 0, max_tokens: int = 256
     return response.content[0].text
 
 def call_llm_structured(messages: list[dict], schema: type[BaseModel], temperature: float = 0, max_tokens: int = 256, system: Optional[str] = None):
-    primed = messages + [{"role": "assistant", "content": "{"}]
-    raw = call_llm(primed, temperature=temperature, max_tokens=max_tokens, system=system)
+    kwargs = dict(model="claude-haiku-4-5-20251001", max_tokens=max_tokens, messages=messages, temperature=temperature, output_format=schema)
+    if system:
+        kwargs["system"] = system
+    response = client.messages.parse(**kwargs)
+    return response.parsed_output
 
-    raw = "{" + raw
-    try:
-        return schema.model_validate_json(raw)
-    except ValidationError as e:
-        print(f"Validation failed. Raw model output was:\n{raw}")
-        raise
 
 class NoteSummary(BaseModel):
     summary: str
@@ -64,7 +61,6 @@ if __name__ == "__main__":
     
     result = call_llm_structured(notes, schema=NoteSummary, system=system)
     print(result)
-    result = NoteSummary.model_validate_json('{"summary": "oops", "tags": "not-a-list"}')
 
 
 
