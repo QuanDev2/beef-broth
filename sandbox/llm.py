@@ -28,6 +28,14 @@ def call_llm_structured(messages: list[dict], schema: type[BaseModel], temperatu
     if system:
         kwargs["system"] = system
     response = client.messages.parse(**kwargs)
+
+    print("input tokens", response.usage.input_tokens)
+    print("output tokens", response.usage.output_tokens)
+    input_cost  = response.usage.input_tokens  * (0.80 / 1_000_000)
+    output_cost = response.usage.output_tokens * (4.00 / 1_000_000)
+    total_cost  = input_cost + output_cost
+    print(f"cost in USD ${total_cost:.6f}")
+
     return response.parsed_output
 
 
