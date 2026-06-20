@@ -16,7 +16,7 @@
 | 3 | Tokens, context window, cost | done | |
 | 4 | Temperature + params | done | |
 | 5 | System prompts | done | |
-| 6 | Structured JSON output (build) | | |
+| 6 | Structured JSON output (build) | done | |
 | 7 | `llm.py` helper (build) | | |
 
 ### Week 2 — Vision + story generator
@@ -121,6 +121,20 @@
 ## Session Log
 
 <!-- YYYY-MM-DD | Week X Day Y | Topic | Duration | Key insight or deviation -->
+
+### Week 1, Day 6 — Structured JSON output
+Date: 2026-06-20
+Status: done
+
+Completed:
+- Added `call_llm_structured(messages, schema, ...)` to `sandbox/llm.py` with a Pydantic `NoteSummary` model
+- First built the post-hoc validation path: requested JSON, hit the two real failures (code-fence wrapper → invalid JSON; wrong-shape keys like `trip_summary`), forced shape via a JSON-API system prompt + assistant prefill (`"{"`), and added a `try/except ValidationError` failure path
+- Then refactored to the modern path: `client.messages.parse(output_format=schema)` → `response.parsed_output` returns a validated object with no system prompt, no prefill, no fence-stripping, no manual validation
+
+Notes:
+- Prefill (`"{"`) works on Haiku 4.5 but 400s on Opus 4.6+/Fable 5 — it's the legacy technique; structured outputs (`output_config.format` / `messages.parse`) is the current standard, with strict tool use as the other option
+- Structured outputs costs input tokens for the schema (121 → 328 on this call); SDK caches a compiled schema ~24h so repeat calls with the same schema amortize it
+- Leftover in `__main__`: still passes the now-unneeded `system=` and defines an unused `prompt`/`system` — harmless cruft to clean up on the Day 7 consolidation
 
 ### Week 1, Day 5 — System prompts
 Date: 2026-06-14
