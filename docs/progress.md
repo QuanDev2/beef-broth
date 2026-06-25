@@ -17,7 +17,7 @@
 | 4 | Temperature + params | done | |
 | 5 | System prompts | done | |
 | 6 | Structured JSON output (build) | done | |
-| 7 | `llm.py` helper (build) | | |
+| 7 | `llm.py` helper (build) | done | |
 
 ### Week 2 — Vision + story generator
 
@@ -121,6 +121,22 @@
 ## Session Log
 
 <!-- YYYY-MM-DD | Week X Day Y | Topic | Duration | Key insight or deviation -->
+
+### Week 1, Day 7 — Consolidate `llm.py` helper
+Date: 2026-06-25
+Status: done
+
+Completed:
+- Extracted the duplicated token/cost-reporting block (copy-pasted across both functions) into one module-private `_report_cost(usage)` helper; both `call_llm` and `call_llm_structured` now call it
+- Removed Day-6 leftovers: the now-redundant `system=` JSON-API prompt on the structured path (`messages.parse` constrains shape at decode time), the dead `prompt` variable, and the unused `ValidationError` import
+- `__main__` now demonstrates both paths in one run: a text call (`call_llm`, "Describe Saigon in one sentence") and a validated-JSON call (`call_llm_structured` → `NoteSummary`)
+- Verified by running: text call 16 in / 49 out; structured call 281 in / 93 out (schema input-token cost as seen Day 6); structured returns a validated `NoteSummary` object
+
+Notes:
+- Week 1 complete. `sandbox/llm.py` is the reusable wrapper every later job (`caption.py`, `story.py`, `match.py`) imports: messages/system/temperature/max_tokens, cost logging, text + validated-structured paths
+- Kept Haiku prices (`0.80`/`4.00`) inline rather than hoisting to named constants — fine at one model; revisit when a second model enters
+- `_report_cost` is defined below its callers (works — name resolved at call time); left as-is
+- Untracked `.vscode/` not committed; candidate for `.gitignore`
 
 ### Week 1, Day 6 — Structured JSON output
 Date: 2026-06-20
