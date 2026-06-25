@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(rtk gh *)"
+      "Bash(rtk gh *)",
+      "Bash(rtk find *)",
+      "Bash(/usr/bin/find . -type f \\\\\\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \\\\\\) -not -path './.venv/*')",
+      "Bash(/usr/bin/find . -iname 'saigon-1*' -not -path './.venv/*')",
+      "Bash(rtk ls *)",
+      "Bash(file photos/saigon-1.webp)",
+      "Bash(file saigon-1.webp)",
+      "Bash(rtk du *)"
     ]
   }
 }
