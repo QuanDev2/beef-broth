@@ -1,7 +1,7 @@
 import anthropic
 from dotenv import load_dotenv
 from typing import Optional
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -14,12 +14,7 @@ def call_llm(messages: list[dict], temperature: float = 0, max_tokens: int = 256
         kwargs["system"] = system
     response = client.messages.create(**kwargs)
 
-    print("input tokens", response.usage.input_tokens)
-    print("output tokens", response.usage.output_tokens)
-    input_cost  = response.usage.input_tokens  * (0.80 / 1_000_000)
-    output_cost = response.usage.output_tokens * (4.00 / 1_000_000)
-    total_cost  = input_cost + output_cost
-    print(f"cost in USD ${total_cost:.6f}")
+    _report_cost(response.usage)
 
     return response.content[0].text
 
@@ -29,14 +24,17 @@ def call_llm_structured(messages: list[dict], schema: type[BaseModel], temperatu
         kwargs["system"] = system
     response = client.messages.parse(**kwargs)
 
-    print("input tokens", response.usage.input_tokens)
-    print("output tokens", response.usage.output_tokens)
-    input_cost  = response.usage.input_tokens  * (0.80 / 1_000_000)
-    output_cost = response.usage.output_tokens * (4.00 / 1_000_000)
-    total_cost  = input_cost + output_cost
-    print(f"cost in USD ${total_cost:.6f}")
+    _report_cost(response.usage)
 
     return response.parsed_output
+
+def _report_cost(usage) -> None:
+    print("input tokens", usage.input_tokens)
+    print("output tokens", usage.output_tokens)
+    input_cost  = usage.input_tokens  * (0.80 / 1_000_000)
+    output_cost = usage.output_tokens * (4.00 / 1_000_000)
+    total_cost  = input_cost + output_cost
+    print(f"cost in USD ${total_cost:.6f}")
 
 
 class NoteSummary(BaseModel):
@@ -44,10 +42,11 @@ class NoteSummary(BaseModel):
     tags: list[str]
 
 if __name__ == "__main__":
-    prompt = [{
+    describe = [{
         "role": "user",
-        "content": "Describe Saigon in one sentence."
-    }]
+        "content": "Describe Saigon in one sentence"
+    }]    
+    print(call_llm(describe))
 
     notes = [{
         "role": "user",
@@ -60,14 +59,7 @@ if __name__ == "__main__":
             "- Cafes and shopping in the evening."
         )
     }]
-
-    system = (
-        "You are a JSON API. Return ONLY a valid JSON object, no markdown, "
-        "no code fences, no prose. Schema: "
-        '{"summary": "<one sentence string>", "tags": ["<string>", ...]}'
-    )
-    
-    result = call_llm_structured(notes, schema=NoteSummary, system=system)
+    result = call_llm_structured(notes, schema=NoteSummary)
     print(result)
 
 
