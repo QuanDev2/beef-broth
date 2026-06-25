@@ -10,5 +10,8 @@ venv/
 .env.*
 !.env.example
 
+# Sample photos (test fixtures — keep local, don't bloat the repo)
+sandbox/photos/
+
 # OS
 .DS_Store
