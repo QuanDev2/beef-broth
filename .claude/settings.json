@@ -8,7 +8,8 @@
       "Bash(rtk ls *)",
       "Bash(file photos/saigon-1.webp)",
       "Bash(file saigon-1.webp)",
-      "Bash(rtk du *)"
+      "Bash(rtk du *)",
+      "Bash(rtk read *)"
     ]
   }
 }
