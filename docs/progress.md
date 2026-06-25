@@ -23,7 +23,7 @@
 
 | Day | Concept | Status | Notes |
 |-----|---------|--------|-------|
-| 1 | Vision calls: image → description | | |
+| 1 | Vision calls: image → description | done | |
 | 2 | Structured captions (JSON) | | |
 | 3 | Grounded generation | | |
 | 4 | Tone + length controls | | |
@@ -121,6 +121,23 @@
 ## Session Log
 
 <!-- YYYY-MM-DD | Week X Day Y | Topic | Duration | Key insight or deviation -->
+
+### Week 2, Day 1 — Vision calls: image → description
+Date: 2026-06-25
+Status: done
+
+Completed:
+- Started `sandbox/caption.py`: loads `photos/saigon-1.webp`, base64-encodes the bytes, sends it to the vision model and prints the description
+- Path anchored to the script via `Path(__file__).parent` (not cwd) so it works when imported/run from anywhere
+- Built the multimodal message shape: `content` is a list of blocks — an `image` block (`source: {type: base64, media_type: image/webp, data}`) plus a `text` block ("Describe this photo.")
+- Reused `call_llm` from `llm.py` unchanged — it passes `messages` straight through, so the same text wrapper handles vision (Week 1 consolidation paying off)
+- First real caption returned: correctly identified Ho Chi Minh City, colonial + modern architecture, motorbikes, etc.
+
+Notes:
+- Cost lesson felt directly: the image was **1552 input tokens** vs ~16 for a text prompt (~100×). Images tokenize by dimensions (photo was 3100×2069). This is the concrete reason for the cheap-before-expensive ordering — de-dupe free local CLIP first, caption only survivors (Week 4)
+- Output was freeform markdown and hit the `max_tokens=256` cap (cut off mid-sentence). Pretty for humans, unparseable for code — motivates Day 2 (structured `{content, mood, quality_flags}` JSON via `call_llm_structured`)
+- Sample is `.webp` (web download). API supports webp fine; real ~30-photo set should be JPEGs (phone-realistic) before Day 6 batch
+- Repo hygiene: caption.py commit (`b3b2889`) also pulled in the 620K image binary plus `.vscode/`/`.claude/` settings. Decide whether to `.gitignore` `sandbox/photos/` before adding the full set (~18MB of binaries otherwise lands in a public repo)
 
 ### Week 1, Day 7 — Consolidate `llm.py` helper
 Date: 2026-06-25
